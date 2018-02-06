@@ -3,7 +3,7 @@ const socket = io();
 socket.on("connect", () => {
     socket.emit("createMessage", {
         from: "Arvind",
-        text: "Lelebaau"
+        text: "Hey, this text is sent by Arvind Jaiswal"
     });
 });
 
