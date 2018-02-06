@@ -4,6 +4,7 @@ const express = require('express');
 const socketIO = require('socket.io');
 
 const { PORT, rootPath } = require('../config/config');
+const { constructMessage } = require('./utils/message');
 const publicPath = path.join(rootPath, "public");
 
 const app = express();
@@ -49,17 +50,10 @@ io.on('connection', socket => {
          */
 
         // socket.emit for Welcome Message to the Joinee
-        socket.emit("newMessage", {
-            from: "Admin",
-            text: `Welcome to the Node Chat App, ${msgData.from}`
-        });
+        socket.emit("newMessage", constructMessage("Admin", `Welcome to the Node Chat App, ${msgData.from}`));
 
         // socket.broadcast to intimate everyone else that a new user has joined
-        socket.broadcast.emit("newMessage", {
-            from: "Admin",
-            text: `${msgData.from} has joined the group`,
-            createdAt: new Date().getTime()
-        });
+        socket.broadcast.emit("newMessage", constructMessage("Admin", `${msgData.from} has joined the group`));
         //      
     });
 
