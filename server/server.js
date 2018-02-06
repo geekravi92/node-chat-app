@@ -13,7 +13,13 @@ const io = socketIO(server); // Returns the WebSocketServer. We can now emmit an
 
 io.on('connection', socket => {
     console.log("New user connected");
-    
+
+    socket.on("createMessage", (msgData) => {
+        console.log(msgData);
+        socket.emit("newMessage", msgData);
+    });
+
+
     socket.on("disconnect", () => {
         console.log("User disconnected");
     });
