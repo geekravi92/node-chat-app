@@ -7,13 +7,67 @@ const AppController = (function (UICtrl, socket) {
         this.text = text;
     }
 
+    /**
+     * Get Query Parameters as Object (Deparameterize)
+     */
+    // function deparamUri(uriParam) {
+    //     let uri = uriParam, queryString = {};
+
+    //     if (uri === undefined) {
+    //         uri = window.location.search;
+    //     }
+
+    //     uri.split("?").pop().split("&").forEach(function (prop) {
+    //         var item = prop.split("=");
+    //         queryString[item.shift()] = item.shift();
+    //     });
+    //     return queryString;
+    // }
+    function deparamUri(uriParam) {
+        let uri = uriParam, queryString = {};
+
+        if (uri === undefined) {
+            uri = window.location.search;
+        }
+
+        uri.replace(
+            new RegExp(
+                "([^?=&]+)(=([^&#]*))?", "g"),
+            function ($0, $1, $2, $3) {
+                if ($3)
+                    queryString[$1] = decodeURIComponent($3.replace(/\+/g, '%20'));
+            }
+        );
+        return queryString;
+    }
+
+
     function setUpSocketListeners() {
 
         // Listening to connection
-        socket.on("connect", () => console.log("Connected to the Server"));
+        socket.on("connect", () => {
+            const queryParams = deparamUri(window.location.search);
+
+            // Joining a room
+            socket.emit("join", queryParams, (err) => {
+                if (err) {
+                    alert(err);
+                    window.location.href = "/";
+                } else {
+                    console.log("No error");
+                }
+            });
+        });
 
         // Listening to disconnection
         socket.on("disconnect", () => console.log("Disconnected from the server"));
+
+
+        // Listening to updateUserList event
+        socket.on("updateUserList", (users) => {
+            console.log(users);
+            UICtrl.updateUserList(users);
+        });
 
         // Listening to incoming messages
         socket.on("newMessage", (newMsg) => {

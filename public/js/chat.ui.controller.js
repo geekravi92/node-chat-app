@@ -11,6 +11,7 @@ const UIController = (function () {
         inputName: "[name=message]",
         messageTemplate: "#message-template",
         locationMessageTemplate: "#location-message-template",
+        users: "#users",
         clearInput: ".clear"
     };
 
@@ -46,6 +47,16 @@ const UIController = (function () {
     return {
         getDOMStrings() {
             return DOMStrings;
+        },
+
+        updateUserList(usernames) {
+            let ol = `<ol>`;
+
+            usernames.forEach(username => {
+                ol += `<li>${username}</li>`;
+            });
+            ol = ol + `</ol>`;
+            document.querySelector(DOMStrings.users).innerHTML = ol;
         },
 
         setNewMessage(from, text, createdOn) {
