@@ -2,10 +2,6 @@
  * App Controller
  */
 const AppController = (function (UICtrl, socket) {
-    function Chat(from, text) {
-        this.from = from;
-        this.text = text;
-    }
 
     /**
      * Get Query Parameters as Object (Deparameterize)
@@ -88,12 +84,13 @@ const AppController = (function (UICtrl, socket) {
         // DOM Events
         document.querySelector(DOM.chatBox).addEventListener("submit", (event) => {
             event.preventDefault();
-            const userInput = UICtrl.getCreatedMessage();
-            const newChat = new Chat(userInput.from, userInput.text);
-            socket.emit("createMessage", newChat, () => {
-                console.log("Acknowledgement Recieved: Got it")
-                UICtrl.clearInputs();
-            });
+            socket.emit(
+                "createMessage",
+                UICtrl.getCreatedMessage(),
+                () => {
+                    console.log("Acknowledgement Recieved: Got it")
+                    UICtrl.clearInputs();
+                });
         });
 
         const locationButton = document.querySelector(DOM.sendLocation);

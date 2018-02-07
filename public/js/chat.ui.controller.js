@@ -76,7 +76,6 @@ const UIController = (function () {
 
         getCreatedMessage() {
             return {
-                from: "Arvind Jaiswal",
                 text: document.querySelector(DOMStrings.inputName).value
             }
         },
