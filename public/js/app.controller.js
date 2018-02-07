@@ -7,6 +7,10 @@ const AppController = (function (UICtrl, socket) {
         this.text = text;
     }
 
+    function formatChatTime(timestamp) {
+        return moment(timestamp).format("h:mm a");
+    }
+
     function setUpSocketListeners() {
 
         // Listening to connection
@@ -18,13 +22,13 @@ const AppController = (function (UICtrl, socket) {
         // Listening to incoming messages
         socket.on("newMessage", (newMsg) => {
             console.log(newMsg);
-            UICtrl.setNewMessage(newMsg.from, newMsg.text)
+            UICtrl.setNewMessage(`${newMsg.from} ${formatChatTime(newMsg.createdOn)}`, newMsg.text)
         });
 
         // Listening to incoming location message
         socket.on("newLocation", (newLocation) => {
             console.log(newLocation);
-            UICtrl.setNewLocation(newLocation.from, newLocation.url);
+            UICtrl.setNewLocation(`${newLocation.from} ${formatChatTime(newLocation.createdOn)}`, newLocation.url);
         });
     }
 
