@@ -22,6 +22,27 @@ const UIController = (function () {
         return moment(timestamp).format("h:mm a");
     }
 
+    function scrollToBottom() {
+        // Selectors
+        const messages = document.querySelector(DOMStrings.messages);
+        const newMessage = messages.lastElementChild;
+        const lastMessage = newMessage.previousElementSibling;
+
+        // Heights
+        let clientHeight = messages.clientHeight;
+        let scrollTop = messages.scrollTop;
+        let scrollHeight = messages.scrollHeight;
+        let newMessageHeight = newMessage !== null ? window.getComputedStyle(newMessage, null).getPropertyValue("height") : 0;
+        let lastMessageHeight = lastMessage !== null ? window.getComputedStyle(lastMessage, null).getPropertyValue("height") : 0;
+
+        newMessageHeight = parseInt(newMessageHeight.toString().split("px")[0]);
+        lastMessageHeight = parseInt(lastMessageHeight.toString().split("px")[0]);
+
+        if (clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
+            messages.scrollTop = scrollHeight;
+        }
+    }
+
     return {
         getDOMStrings() {
             return DOMStrings;
@@ -31,12 +52,14 @@ const UIController = (function () {
             let template = document.querySelector(DOMStrings.messageTemplate).innerHTML;
             template = Mustache.render(template, { from, text, createdOn: formatChatTime(createdOn) });
             insertMessageToChat(template);
+            scrollToBottom();
         },
 
         setNewLocation(from, url, createdOn) {
             let template = document.querySelector(DOMStrings.locationMessageTemplate).innerHTML;
             template = Mustache.render(template, { from, url, createdOn: formatChatTime(createdOn) });
             insertMessageToChat(template);
+            scrollToBottom()
 
         },
 
