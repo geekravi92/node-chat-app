@@ -13,13 +13,16 @@
 
     <ol id="messages"></ol>
     <form id="chat-box">
-        <input type="text" placeholder="Type a message" name="message" id="message">
+        <input type="text" placeholder="Type a message" name="message" id="message" class="clear">
         <button>Send</button>
     </form>
-
+    <br>
+    <button id="send-location">Send Location</button>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script src="js/index.js"></script>
+    <script src="js/ui.controller.js"></script>
+    <script src="js/app.controller.js"></script>
+    <!-- <script src="js/index.js"></script> -->
 </body>
 
 </html>

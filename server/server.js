@@ -4,7 +4,7 @@ const express = require('express');
 const socketIO = require('socket.io');
 
 const { PORT, rootPath } = require('../config/config');
-const { constructMessage } = require('./utils/message');
+const { constructMessage, constructLocation } = require('./utils/message');
 const publicPath = path.join(rootPath, "public");
 
 const app = express();
@@ -34,7 +34,7 @@ io.on('connection', socket => {
     socket.broadcast.emit("newMessage", constructMessage("Admin", `New user has joined the group`));
     //    
 
-    socket.on("createMessage", function(msgData, callback){
+    socket.on("createMessage", function (msgData, callback) {
         console.log(msgData);
 
         /**
@@ -44,6 +44,9 @@ io.on('connection', socket => {
         callback();
     });
 
+    socket.on("sendLocation", (coords) => {
+        io.emit("newLocation", constructLocation("Admin", coords.latitude, coords.longitude));
+    });
 
     socket.on("disconnect", () => {
         console.log("User disconnected");
