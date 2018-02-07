@@ -47,10 +47,11 @@ const AppController = (function (UICtrl, socket) {
             if (!navigator.geolocation) {
                 return alert("Geolocation not supported by your browser");
             }
-
+            locationButton.disabled = true;
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     console.log(position);
+                    locationButton.disabled = false;
                     socket.emit(
                         "sendLocation",
                         {
@@ -60,6 +61,7 @@ const AppController = (function (UICtrl, socket) {
                     )
                 },
                 (error) => {
+                    locationButton.disabled = false;
                     alert("Unable to fetch location");
                 }
             )
