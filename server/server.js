@@ -15,46 +15,33 @@ const io = socketIO(server); // Returns the WebSocketServer. We can now emmit an
 io.on('connection', socket => {
     console.log("New user connected");
 
-    socket.on("createMessage", (msgData) => {
+    /**
+     * Chat App Functionalities
+     */
+
+
+    /**
+     * socket.emit emits to the single connection
+     */
+    // socket.emit for Welcome Message to the Joinee
+    socket.emit("newMessage", constructMessage("Admin", `Welcome to the Node Chat App`));
+
+
+    /**
+     * socket.broadcast emits to everyone but originator
+     */
+    // socket.broadcast to intimate everyone else that a new user has joined
+    socket.broadcast.emit("newMessage", constructMessage("Admin", `New user has joined the group`));
+    //    
+
+    socket.on("createMessage", function(msgData, callback){
         console.log(msgData);
-
-        /**
-         * socket.emit emits to the single connection
-         */
-        // socket.emit("newMessage", msgData);
-
 
         /**
          * io.emit emits to every single connection
          */
-        // io.emit("newMessage", {
-        //     from: msgData.from,
-        //     text: msgData.text,
-        //     createdAt: new Date().getTime()
-        // });
-
-        /**
-         * socket.broadcast emits to everyone but originator
-         */
-        // socket.broadcast.emit("newMessage", {
-        //     from: msgData.from,
-        //     text: msgData.text,
-        //     createdAt: new Date().getTime()
-        // });
-
-
-
-
-        /**
-         * Chat App Functionalities
-         */
-
-        // socket.emit for Welcome Message to the Joinee
-        socket.emit("newMessage", constructMessage("Admin", `Welcome to the Node Chat App, ${msgData.from}`));
-
-        // socket.broadcast to intimate everyone else that a new user has joined
-        socket.broadcast.emit("newMessage", constructMessage("Admin", `${msgData.from} has joined the group`));
-        //      
+        io.emit("newMessage", constructMessage(msgData.from, msgData.text));
+        callback();
     });
 
 
