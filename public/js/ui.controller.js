@@ -9,6 +9,8 @@ const UIController = (function () {
         chatBox: "#chat-box",
         sendLocation: "#send-location",
         inputName: "[name=message]",
+        messageTemplate: "#message-template",
+        locationMessageTemplate: "#location-message-template",
         clearInput: ".clear"
     };
 
@@ -16,19 +18,26 @@ const UIController = (function () {
         document.querySelector(DOMStrings.messages).insertAdjacentHTML("beforeend", html);
     }
 
+    function formatChatTime(timestamp) {
+        return moment(timestamp).format("h:mm a");
+    }
+
     return {
         getDOMStrings() {
             return DOMStrings;
         },
 
-        setNewMessage(from, text) {
-            const li = `<li>${from}: ${text}</li>`;
-            insertMessageToChat(li);
+        setNewMessage(from, text, createdOn) {
+            let template = document.querySelector(DOMStrings.messageTemplate).innerHTML;
+            template = Mustache.render(template, { from, text, createdOn: formatChatTime(createdOn) });
+            insertMessageToChat(template);
         },
 
-        setNewLocation(from, url) {
-            const li = `<li><a target=_blank href="${url}">Location of ${from}</a></li>`;
-            insertMessageToChat(li);
+        setNewLocation(from, url, createdOn) {
+            let template = document.querySelector(DOMStrings.locationMessageTemplate).innerHTML;
+            template = Mustache.render(template, { from, url, createdOn: formatChatTime(createdOn) });
+            insertMessageToChat(template);
+
         },
 
         getCreatedMessage() {
